@@ -1,0 +1,49 @@
+{% extends "learning_logs/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h2 class="text-center fw-bold text-primary">添加新主题</h2>
+            </div>
+            <div class="card-body p-4">
+                <form action="{% url 'learning_logs:new_topic' %}" method="post">
+                    {% csrf_token %}
+                    
+                    <!-- 错误提示 -->
+                    {% if form.text.errors %}
+                        <div class="alert alert-danger py-2 small">{{ form.text.errors }}</div>
+                    {% endif %}
+
+                    <!-- 主题名称输入 -->
+                    <div class="mb-3">
+                        <label for="{{ form.text.id_for_label }}" class="form-label fw-bold">{{ form.text.label }}</label>
+                        {{ form.text }} 
+                    </div>
+
+                    <!-- 公开/私有选项 -->
+                    <div class="mb-4 p-3 bg-light rounded border">
+                        <div class="form-check">
+                            {{ form.public }} <!-- Checkbox放在这里 -->
+                            <label class="form-check-label fw-bold" for="{{ form.public.id_for_label }}">
+                                {{ form.public.label }}
+                            </label>
+                        </div>
+                        <div class="small text-muted mt-1 ms-4">
+                            勾选后，该主题将对其他用户可见。
+                        </div>
+                        {% if form.public.errors %}
+                            <div class="text-danger small mt-1">{{ form.public.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button name="submit" class="btn btn-success btn-lg">保存主题</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

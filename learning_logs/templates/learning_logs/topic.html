@@ -1,0 +1,103 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    
+    <!-- 1. 主题头部区域 -->
+    <div class="p-4 mb-4 bg-white rounded-3 shadow-sm border">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-6 fw-bold text-primary">{{ topic.text }}</h1>
+                <p class="text-muted mb-0">
+                    所有者：<strong>{{ topic.owner.username }}</strong> 
+                    {% if topic.public %}
+                        <span class="badge bg-success ms-2">公开</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark ms-2">私有</span>
+                    {% endif %}
+                </p >
+            </div>
+            
+            <!-- 操作按钮区 -->
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                {% if user == topic.owner %}
+                    <a href="{% url 'learning_logs:new_entry' topic.id %}" class="btn btn-outline-primary me-2">
+                        添加新条目
+                    </a >
+                    <a href="{% url 'learning_logs:edit_topic' topic.id %}" class="btn btn-outline-secondary">
+                        编辑主题
+                    </a >
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 条目列表区域 -->
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            {% for entry in entries %}
+                <!-- 单个条目卡片 -->
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <small class="text-muted fw-bold">
+                            {{ entry.date_added|date:'Y年m月d日 H:i' }}
+                        </small>
+                        {% if user == topic.owner %}
+                            <a href="{% url 'learning_logs:edit_entry' entry.id %}" class="btn btn-sm btn-light text-muted" title="编辑此条目">
+                                编辑
+                            </a >
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- 条目内容，保留换行符 -->
+                        <p class="card-text fs-5" style="white-space: pre-wrap;">{{ entry.text }}</p >
+                    </div>
+
+                    <!-- 3. 评论区 (嵌套在条目卡片底部) -->
+                    <div class="card-footer bg-white border-top-0 ps-4">
+                        <h6 class="text-muted small mb-3 border-bottom pb-1">评论 ({{ entry.comments.count }})</h6>
+                        
+                        <!-- 显示已有评论 -->
+                        {% for comment in entry.comments.all %}
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong class="text-primary small">{{ comment.owner.username }}</strong>
+                                    <small class="text-muted" style="font-size: 0.75rem;">{{ comment.date_added|date:'m-d H:i' }}</small>
+                                </div>
+                                <p class="mb-0 text-secondary small">{{ comment.text }}</p >
+                            </div>
+                        {% empty %}
+                            <p class="text-muted fst-italic small">暂无评论...</p >
+                        {% endfor %}
+
+                        <!-- 发表评论表单 -->
+                        {% if topic.public and user.is_authenticated %}
+                            <form action="{% url 'learning_logs:topic' topic.id %}" method="post" class="mt-3">
+                                {% csrf_token %}
+                                <!-- 隐藏域：告诉服务器这条评论属于哪个条目 -->
+                                <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                                
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="text" class="form-control" placeholder="写下你的想法..." required>
+                                    <button class="btn btn-primary" type="submit" name="comment_submit">发送</button>
+                                </div>
+                            </form>
+                        {% elif not user.is_authenticated and topic.public %}
+                             <p class="text-muted small mt-2"><a href="{% url 'accounts:login' %}">登录</a >后即可参与评论。</p >
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <!-- 没有条目的提示 -->
+                <div class="alert alert-info text-center">
+                    该主题下还没有条目。
+                    {% if user == topic.owner %}
+                        点击上方“添加新条目”开始记录吧！
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

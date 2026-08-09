@@ -1,0 +1,34 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4 fw-bold text-success">创建新账户</h2>
+                    
+                    <form action="{% url 'accounts:register' %}" method='post'>
+                        {% csrf_token %}
+                        
+                        <!-- 渲染表单字段 -->
+                        {{ form.as_div }}
+                        
+                        <!-- 提交按钮 (使用绿色 success 区分注册操作) -->
+                        <div class="d-grid gap-2 mt-3">
+                            <button name="submit" class="btn btn-success btn-lg">注册</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 底部链接区 -->
+                <div class="card-footer text-center bg-white border-0 pb-3">
+                    <p class="text-muted small mb-0">已有账号？ <a href="{% url 'accounts:login' %}" class="text-decoration-none">去登录</a ></p >
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

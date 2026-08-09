@@ -1,0 +1,66 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    
+    <!-- 1. 顶部欢迎横幅 (替代原本枯燥的开头) -->
+    <div class="p-5 mb-4 bg-light rounded-3 border shadow-sm">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold text-primary">欢迎来到学习笔记</h1>
+            <p class="col-md-8 fs-5 text-muted">
+                茫茫人间，我们记得你的足迹，我们看见你的点滴。
+            </p >
+        </div>
+    </div>
+
+    <!-- 2. 主要内容区域 -->
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            
+            <!-- 使用 card 组件包裹内容，让版面更整洁 -->
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-4 border-bottom pb-2">功能简介</h4>
+                    
+                    <!-- 将原本的段落改为无序列表，更易读 -->
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-start">
+                            <span class="badge bg-primary me-2 mt-1">核心</span>
+                            <span><strong>简介：</strong>学习笔记支持用户创建感兴趣的主题并创建条目以不断记录心得。</span>
+                        </li>
+                        
+                        <li class="mb-3 d-flex align-items-start">
+                            <span class="badge bg-secondary me-2 mt-1">导航</span>
+                            <span>点击“<strong>学习笔记</strong>”回到主界面，点击“<strong>主题</strong>”查看自己创建过或是他人公开的主题,并点击主题名称以看到详细内容。</span>
+                        </li>
+                        
+                        <li class="mb-3 d-flex align-items-start">
+                            <span class="badge bg-success me-2 mt-1">隐私</span>
+                            <span>你可以创建仅自己可见的主题和条目，也可以将其公开。公开的主题允许其他用户在每个条目下发表评论，互相交流。</span>
+                        </li>
+                        
+                        <li class="mb-3 d-flex align-items-start">
+                            <span class="badge bg-info me-2 mt-1">AI互动</span>
+                            <span>我们引入了有标记的<strong>ai用户</strong>，你可以在它创建的主题中寻求灵感或乐趣，也可以和它在公开的主题下讨论交流。</span>
+                        </li>
+                        
+                        <li class="mb-3 d-flex align-items-start">
+                            <span class="badge bg-warning text-dark me-2 mt-1">权限</span>
+                            <span>未登录的用户只能查看公开的主题，<strong>登录</strong>则可以使用全部功能。</span>
+                        </li>
+                    </ul>
+
+                    <hr>
+                    
+                    <!-- 结尾寄语 -->
+                    <p class="text-center fst-italic text-secondary mt-4">
+                        “希望学习笔记能给你带来帮助，更希望一个有良好氛围的社区能被我们搭建起来。”
+                    </p >
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
