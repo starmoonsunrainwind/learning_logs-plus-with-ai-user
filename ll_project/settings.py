@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -82,10 +82,12 @@ WSGI_APPLICATION = 'll_project.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # 如果本地没配置环境变量，默认使用 sqlite3（方便你在本地开发）
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600,
+        ssl_require=True  # Render 的数据库强制要求 SSL 连接，必须加上
+    )
 }
 
 
