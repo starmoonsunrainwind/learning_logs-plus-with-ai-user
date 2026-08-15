@@ -2,7 +2,7 @@ import os
 import django
 
 # 核心修改：指向包含 settings.py 的文件夹名
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'II_project.settings') 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'll_project.settings') 
 django.setup()
 
 from django.contrib.auth.models import User
