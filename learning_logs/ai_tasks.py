@@ -72,40 +72,11 @@ def call_qwen(prompt, system_prompt):
     except Exception as e:
         print(f"AI 调用异常: {e}")
         return None
-
-def ai_daily_routine():
-    """Django-Q 定时调用的主函数"""
-    print(">>> AI 开始每日巡查...")
+def create_new_post(ai_user,persona):
     
-    # 1. 随机选择一个 AI 账号
-    ai_key = random.choice(list(AI_PERSONAS.keys()))
-    persona = AI_PERSONAS[ai_key]
-    
-    # 2. 【核心】获取或创建用户，username 直接使用带 [AI] 标记的名字
-    ai_user, created = User.objects.get_or_create(username=persona['display_name'])
-        # ... 前面的代码 (User获取等) ...
-    
-
-    # 随机决定行为权重：
-    # 1. 'new_post': 发全新的主题
-    # 2. 'update_old': 在自己以前的主题下补充条目
-    # 3. 'comment': 去别人的主题下评论
-    action = random.choices(
-        ['new_post', 'update_old', 'comment'], 
-        weights=[20, 40, 40],  # 这里可以调整概率
-        k=1
-    )[0]
-
-    # ================= 情况 A：发布全新主题 =================
-    # ... 前面的代码 ...
-        # ... 前面的代码 ...
-    
-    if action == 'new_post':
-        print(f"🤖 [{persona['display_name']}] 决定发布一个新主题...")
-
         # --- 开始循环尝试生成标题 ---
         final_title = None
-        max_retries = 3 # 最多尝试3次
+        max_retries = 10 # 最多尝试3次
         
         for attempt in range(max_retries):
             # 1. 从话题库里随机抽一个签 (方案一)
@@ -154,6 +125,36 @@ def ai_daily_routine():
         else:
             print("❌ 尝试多次后仍无法生成不重复的标题，本次放弃发帖。")
 
+def ai_daily_routine():
+    """Django-Q 定时调用的主函数"""
+    print(">>> AI 开始每日巡查...")
+    
+    # 1. 随机选择一个 AI 账号
+    ai_key = random.choice(list(AI_PERSONAS.keys()))
+    persona = AI_PERSONAS[ai_key]
+    
+    # 2. 【核心】获取或创建用户，username 直接使用带 [AI] 标记的名字
+    ai_user, created = User.objects.get_or_create(username=persona['display_name'])
+        # ... 前面的代码 (User获取等) ...
+    
+
+    # 随机决定行为权重：
+    # 1. 'new_post': 发全新的主题
+    # 2. 'update_old': 在自己以前的主题下补充条目
+    # 3. 'comment': 去别人的主题下评论
+    action = random.choices(
+        ['new_post', 'update_old', 'comment'], 
+        weights=[20, 40, 40],  # 这里可以调整概率
+        k=1
+    )[0]
+
+    # ================= 情况 A：发布全新主题 =================
+    # ... 前面的代码 ...
+        # ... 前面的代码 ...
+    
+    if action == 'new_post':
+        print(f"🤖 [{persona['display_name']}] 决定发布一个新主题...")
+        create_new_post(ai_user=ai_user,persona=persona)
     # ... 后面的 update_old 代码 ...
 
     # ================= 情况 B：在自己旧主题下更新 (新功能) =================
@@ -178,7 +179,8 @@ def ai_daily_routine():
                     )
                 print(f"✅ 成功在旧主题 [{target_topic.text}] 下更新了条目。")
         else:
-            print("⚠️ 该用户还没有旧主题，无法更新，跳过。")
+            print("⚠️ 该用户还没有旧主题，选择发布一个主题")
+            create_new_post(ai_user=ai_user,persona=persona)
 
     # ================= 情况 C：去别人地盘评论 =============
             
